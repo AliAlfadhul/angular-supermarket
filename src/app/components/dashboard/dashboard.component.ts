@@ -1,0 +1,129 @@
+import { Component, OnInit } from '@angular/core';
+
+import {ItemService} from "../../services/item.service";
+import {Router} from "@angular/router";
+import {CartService} from "../../services/cart.service";
+import {Category, Item} from "../../interfaces";
+
+@Component({
+  selector: 'app-dashboard',
+  templateUrl: './dashboard.component.html',
+  styleUrls: ['./dashboard.component.css']
+})
+export class DashboardComponent implements OnInit {
+
+  items: Item[] = [];
+  categories: Category[] =[];
+  selectedCategory: string = 'All Items';
+
+  nameFilter: string = '';
+  priceFilter: string = '';
+
+  nameInput: string = '';
+  priceInput: string = '';
+
+  showDeleteModal = false
+  itemToDelete: Item | null = null;
+
+  constructor(private itemService: ItemService,
+              private router: Router,
+              private cartService: CartService) { }
+
+  ngOnInit(): void {
+    this.loadItems()
+    this.loadCategories()
+  }
+
+  loadItems() {
+    this.itemService.getItems().subscribe(items => this.items = items);
+  }
+
+  loadCategories() {
+    this.itemService.getCategories().subscribe(categories => this.categories = categories);
+  }
+
+  onEdit(item: Item) {
+    // console.log('Edit clicked', item);
+    this.router.navigate(['edit-item', item.id]);
+  }
+
+  onDelete(item: Item) {
+   this.itemToDelete = item;
+   this.showDeleteModal = true;
+  }
+
+  confirmDelete() {
+    if (this.itemToDelete) {
+      this.itemService.deleteItem(this.itemToDelete.id).subscribe(() => {
+        // console.log('Item deleted successfully');
+        this.loadItems();
+        this.closeDeleteModal()
+      });
+    }
+  }
+
+  closeDeleteModal() {
+    this.showDeleteModal = false;
+    this.itemToDelete = null;
+  }
+
+  onAdd() {
+    // console.log('Add button clicked');
+    this.router.navigate(['add-item']);
+  }
+
+  selectCategory(categoryName: string): void {
+    this.selectedCategory = categoryName;
+  }
+
+  get filteredItems(): Item[] {
+    let filtered = this.items;
+
+    // Filter by category
+    if (this.selectedCategory !== 'All Items') {
+      filtered = filtered.filter(item => item.category === this.selectedCategory);
+    }
+
+    // Filter by name
+    if (this.nameFilter) {
+      filtered = filtered.filter(item =>
+        item.name.toLowerCase().includes(this.nameFilter.toLowerCase())
+      );
+    }
+
+    // Filter by price
+    if (this.priceFilter) {
+      const price = parseFloat(this.priceFilter);
+      filtered = filtered.filter(item => item.price === price);
+    }
+
+    return filtered;
+  }
+
+  onFilter(): void {
+    this.nameFilter = this.nameInput;
+    this.priceFilter = this.priceInput;
+    console.log('Filter applied:', this.nameFilter, this.priceFilter);
+  }
+
+  isInCart(item: Item): boolean {
+    return this.cartService.isInCart(item.id);
+  }
+
+  onCartToggle(item: Item, event: any): void {
+    if (event.target.checked) {
+      this.cartService.addToCart(item);
+    } else {
+      this.cartService.removeFromCart(item.id);
+    }
+  }
+
+  get cartCount(): number {
+    return this.cartService.getCartCount();
+  }
+
+  onGoToCart(): void {
+    this.router.navigate(['/cart']).then();
+  }
+
+}

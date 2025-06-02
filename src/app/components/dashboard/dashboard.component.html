@@ -1,0 +1,54 @@
+<div>
+  <h1 class="app-title">Supermarket App</h1>
+
+
+  <div class="tabs">
+    <button (click)="selectCategory('All Items')" [class.active]="selectedCategory === 'All Items'">All Items</button>
+    <button *ngFor="let cat of categories" (click)="selectCategory(cat.name)" [class.active]="selectedCategory === cat.name">{{ cat.name }}</button>
+  </div>
+
+
+  <div class="filter-section">
+    <input type="text" [(ngModel)]="nameInput" placeholder="Name ...">
+    <input type="number" [(ngModel)]="priceInput" placeholder="Price ..." step="0.01">
+    <button (click)="onFilter()">Filter</button>
+  </div>
+
+
+  <div class="top-actions">
+    <div class="cart-icon" (click)="onGoToCart()">
+      🛒 <span *ngIf="cartCount > 0" class="cart-count">{{ cartCount }}</span>
+    </div>
+    <button class="btn-add" (click)="onAdd()">Add</button>
+  </div>
+
+
+  <div class="items-area">
+    <div class="item-card" *ngFor="let item of filteredItems">
+      <input type="checkbox"
+             [checked]="isInCart(item)"
+             (change)="onCartToggle(item, $event)"
+             class="item-checkbox">
+
+      <div class="item-left">
+        <div class="item-name">{{ item.name }}</div>
+        <div class="item-category">{{ item.category }}</div>
+      </div>
+      <div class="item-price">BD {{ item.price.toFixed(3) }}</div>
+      <div class="item-buttons">
+        <button class="btn-edit" (click)="onEdit(item)">Edit</button>
+        <button class="btn-delete" (click)="onDelete(item)">Delete</button>
+      </div>
+    </div>
+    <div *ngIf="showDeleteModal" class="modal-overlay" (click)="closeDeleteModal()">
+      <div class="modal-content" (click)="$event.stopPropagation()">
+        <h3>Confirm Delete</h3>
+        <p>Are you sure you want to delete "{{ itemToDelete?.name }}"?</p>
+        <div class="modal-buttons">
+          <button class="btn-cancel" (click)="closeDeleteModal()">Cancel</button>
+          <button class="btn-confirm" (click)="confirmDelete()">Delete</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

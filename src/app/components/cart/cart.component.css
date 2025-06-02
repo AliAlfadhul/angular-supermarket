@@ -1,0 +1,125 @@
+.container {
+  width: 100vw;
+  height: 100vh;
+  background-color: #888;
+  margin: 0;
+  padding: 20px;
+}
+
+.app-title {
+  color: white;
+  text-align: center;
+  font-size: 60px;
+  font-weight: bold;
+  margin-bottom: 40px;
+}
+
+.empty-cart {
+  text-align: center;
+  color: white;
+}
+
+.empty-cart h2 {
+  margin-bottom: 20px;
+}
+
+.cart-items {
+  max-width: 800px;
+  margin: 0 auto;
+  margin-bottom: 30px;
+}
+
+.cart-item {
+  background-color: transparent;
+  border: 2px solid #495057;
+  border-radius: 12px;
+  padding: 15px;
+  margin-bottom: 15px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 15px;
+}
+
+.item-info {
+  flex: 1;
+  min-width: 200px;
+}
+
+.item-quantity {
+  display: flex;
+  align-items: center;
+  gap: -2px;
+  color: #495057;
+}
+
+.quantity-input {
+  width: 150px;
+  height: 40px;
+  padding: 8px;
+  margin: 0;
+  text-align: center;
+  background-color: transparent;
+  border: 2px solid #495057;
+  border-radius: 5px 0 0 5px;
+  color: #495057;
+  font-size: 16px;
+  font-weight: bold;
+  z-index: 1;
+  position: relative;
+}
+
+.quantity-input:focus {
+  outline: none;
+  border-color: #495057;
+}
+
+.remove-btn {
+  background-color: #dc3545;
+  color: white;
+  border-radius: 0 8px 8px 0;
+  cursor: pointer;
+  font-size: 16px;
+  min-width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0;
+  border: none;
+}
+
+.remove-btn:hover {
+  background-color: #c82333;
+}
+
+.total-section {
+  text-align: right;
+  font-family: "Times New Roman", serif;
+  font-weight: bold;
+  font-size: 20px;
+  color: #495057;
+  margin-bottom: 30px;
+  max-width: 800px;
+  margin-left: auto;
+  margin-right: auto;
+  padding-top: 20px;
+  border-top: 2px solid #495057;
+}
+
+.back-btn {
+  display: block;
+  margin: 0 auto;
+  background-color: #007bff;
+  color: white;
+  padding: 12px 24px;
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: bold;
+}
+
+.back-btn:hover {
+  background-color: #0056b3;
+}
