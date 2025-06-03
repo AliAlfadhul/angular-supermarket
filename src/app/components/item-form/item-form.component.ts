@@ -27,7 +27,7 @@ export class ItemFormComponent implements OnInit, OnDestroy {
   ) {
     this.itemForm = this.fb.group({
       name: ['', [Validators.required, Validators.minLength(2)]],
-      price: ['', [Validators.required, Validators.min(0.001)]],
+      price: ['', [Validators.required, Validators.min(0.01)]],
       category: ['', Validators.required]
     });
   }

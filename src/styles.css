@@ -149,3 +149,13 @@ html, body {
   border-radius: 8px;
   cursor: pointer;
 }
+
+.error-message {
+  color: #a12530;
+  font-size: 14px;
+  font-weight: bold;
+  margin-top: 5px;
+  margin-left: 15px;
+  display: block;
+}
+

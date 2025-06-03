@@ -7,11 +7,19 @@
     <div class="form-group">
       <label>Name</label>
       <input type="text" formControlName="name" placeholder="Name">
+      <div *ngIf="itemForm.get('name')?.invalid && itemForm.get('name')?.touched"
+           class="error-message">
+        Name is required and must be at least 2 characters!
+      </div>
     </div>
 
     <div class="form-group">
       <label>Price</label>
-      <input type="number" formControlName="price" placeholder="Price" step="0.01">
+      <input type="number" formControlName="price" placeholder="Price" step="0.01" min="0.01">
+      <div *ngIf="itemForm.get('price')?.invalid && itemForm.get('price')?.touched"
+           class="error-message">
+        Price must be at least 0.01!
+      </div>
     </div>
 
     <div class="form-group">
@@ -20,6 +28,10 @@
         <option value="">Category</option>
         <option *ngFor="let cat of categories" [value]="cat.name">{{ cat.name }}</option>
       </select>
+      <div *ngIf="itemForm.get('category')?.invalid && itemForm.get('category')?.touched"
+           class="error-message">
+        Must select a category!
+      </div>
     </div>
 
     <div class="form-buttons">
