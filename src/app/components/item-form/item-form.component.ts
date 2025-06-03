@@ -1,19 +1,23 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnDestroy, OnInit} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
 import { ItemService } from '../../services/item.service';
+import {Subject} from "rxjs";
+import {takeUntil} from "rxjs/operators";
 
 @Component({
   selector: 'app-item-form',
   templateUrl: './item-form.component.html',
   styleUrls: ['./item-form.component.css']
 })
-export class ItemFormComponent implements OnInit {
+export class ItemFormComponent implements OnInit, OnDestroy {
 
   itemForm: FormGroup;
   categories: any[] = [];
   isEdit = false;
   itemId = 0;
+
+  private unsubscribe$ = new Subject<void>();
 
   constructor(
     private fb: FormBuilder,
@@ -39,14 +43,19 @@ export class ItemFormComponent implements OnInit {
     }
   }
 
+  ngOnDestroy() {
+    this.unsubscribe$.next();
+    this.unsubscribe$.complete();
+  }
+
   loadCategories(): void {
-    this.itemService.getCategories().subscribe(data => {
+    this.itemService.getCategories().pipe(takeUntil(this.unsubscribe$)).subscribe(data => {
       this.categories = data;
     });
   }
 
   loadItem(): void {
-    this.itemService.getItem(this.itemId).subscribe(item => {
+    this.itemService.getItem(this.itemId).pipe(takeUntil(this.unsubscribe$)).subscribe(item => {
       this.itemForm.patchValue(item);
     });
   }
@@ -57,11 +66,11 @@ export class ItemFormComponent implements OnInit {
 
       if (this.isEdit) {
         item.id = this.itemId;
-        this.itemService.updateItem(item).subscribe(() => {
+        this.itemService.updateItem(item).pipe(takeUntil(this.unsubscribe$)).subscribe(() => {
           this.router.navigate(['/']);
         });
       } else {
-        this.itemService.addItem(item).subscribe(() => {
+        this.itemService.addItem(item).pipe(takeUntil(this.unsubscribe$)).subscribe(() => {
           this.router.navigate(['/']);
         });
       }

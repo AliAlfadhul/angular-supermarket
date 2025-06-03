@@ -1,22 +1,31 @@
 import { Injectable } from '@angular/core';
 import {Item} from "../interfaces";
+import {BehaviorSubject} from "rxjs";
 
 @Injectable({
   providedIn: 'root'
 })
 export class CartService {
 
-  cartItems: any[] = [];
+  // cartItems: any[] = [];
+
+  //reactive cart
+  private cartItemsSubject = new BehaviorSubject<any[]>([]);
+
+  //get the current value of cartItems
+  cartItems$ = this.cartItemsSubject.asObservable();
 
   constructor() { }
 
   addToCart(item: Item): void {
-    const existing = this.cartItems.find(cartItem => cartItem.id === item.id);
+    //access the latest cart array
+    const currentItems = this.cartItemsSubject.value;
+    const existing = currentItems.find(cartItem => cartItem.id === item.id);
 
     if (existing) {
       existing.quantity++;
     } else {
-      this.cartItems.push({
+      currentItems.push({
         id: item.id,
         name: item.name,
         price: item.price,
@@ -24,21 +33,27 @@ export class CartService {
         quantity: 1
       });
     }
+
+    this.cartItemsSubject.next([...currentItems]);
   }
 
   removeFromCart(itemId: number): void {
-    this.cartItems = this.cartItems.filter(item => item.id !== itemId);
+    const currentItems = this.cartItemsSubject.value.filter(item => item.id !== itemId);
+    this.cartItemsSubject.next(currentItems);
   }
 
   isInCart(itemId: number): boolean {
-    return this.cartItems.some(item => item.id === itemId);
+    const currentItems = this.cartItemsSubject.value;
+    return currentItems.some(item => item.id === itemId);
   }
 
   getCartCount(): number {
-    return this.cartItems.reduce((total, item) => total + item.quantity, 0);
+    const currentItems = this.cartItemsSubject.value;
+    return currentItems.reduce((total, item) => total + item.quantity, 0);
   }
 
   getTotalPrice(): number {
-    return this.cartItems.reduce((total, item) => total + (item.price * item.quantity), 0);
+    const currentItems = this.cartItemsSubject.value;
+    return currentItems.reduce((total, item) => total + (item.price * item.quantity), 0);
   }
 }

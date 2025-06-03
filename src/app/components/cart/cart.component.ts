@@ -17,7 +17,9 @@ export class CartComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    this.cartItems = this.cartService.cartItems;
+    this.cartService.cartItems$.subscribe(data => {
+      this.cartItems = data;
+    });
   }
 
   onQuantityChange(itemId: number, event: any): void {
@@ -30,7 +32,6 @@ export class CartComponent implements OnInit {
 
   onRemoveItem(itemId: number): void {
     this.cartService.removeFromCart(itemId);
-    this.cartItems = this.cartService.cartItems;
   }
 
   onBackToDashboard(): void {

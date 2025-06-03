@@ -1,16 +1,18 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnDestroy, OnInit} from '@angular/core';
 
 import {ItemService} from "../../services/item.service";
 import {Router} from "@angular/router";
 import {CartService} from "../../services/cart.service";
 import {Category, Item} from "../../interfaces";
+import {Subject} from "rxjs";
+import {takeUntil} from "rxjs/operators";
 
 @Component({
   selector: 'app-dashboard',
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.css']
 })
-export class DashboardComponent implements OnInit {
+export class DashboardComponent implements OnInit, OnDestroy {
 
   items: Item[] = [];
   categories: Category[] =[];
@@ -25,6 +27,9 @@ export class DashboardComponent implements OnInit {
   showDeleteModal = false
   itemToDelete: Item | null = null;
 
+  //clean up subscriptions
+  private unsubscribe$ = new Subject<void>();
+
   constructor(private itemService: ItemService,
               private router: Router,
               private cartService: CartService) { }
@@ -34,12 +39,29 @@ export class DashboardComponent implements OnInit {
     this.loadCategories()
   }
 
+  ngOnDestroy(): void {
+    this.unsubscribe$.next();
+    this.unsubscribe$.complete();
+  }
+
   loadItems() {
-    this.itemService.getItems().subscribe(items => this.items = items);
+    //old way
+    // this.itemService.getItems().subscribe(items => this.items = items);
+
+    //with cleanup
+    this.itemService.getItems().pipe(takeUntil(this.unsubscribe$)).subscribe(
+      items => this.items = items
+    )
   }
 
   loadCategories() {
-    this.itemService.getCategories().subscribe(categories => this.categories = categories);
+    //old way
+    // this.itemService.getCategories().subscribe(categories => this.categories = categories);
+
+    //with cleanup
+    this.itemService.getCategories().pipe(takeUntil(this.unsubscribe$)).subscribe(
+      categories => this.categories = categories
+    )
   }
 
   onEdit(item: Item) {
@@ -54,13 +76,20 @@ export class DashboardComponent implements OnInit {
 
   confirmDelete() {
     if (this.itemToDelete) {
-      this.itemService.deleteItem(this.itemToDelete.id).subscribe(() => {
-        // console.log('Item deleted successfully');
-        this.loadItems();
+      //old way
+      // this.itemService.deleteItem(this.itemToDelete.id).subscribe(() => {
+      // this.loadItems();
+      // this.closeDeleteModal()
+      // })
+
+        //with cleanup
+        this.itemService.deleteItem(this.itemToDelete.id).pipe(takeUntil(this.unsubscribe$)).subscribe(() => {
+          this.items = this.items.filter(item => item.id !== this.itemToDelete?.id);
         this.closeDeleteModal()
-      });
+        })
+
+      }
     }
-  }
 
   closeDeleteModal() {
     this.showDeleteModal = false;
@@ -103,7 +132,7 @@ export class DashboardComponent implements OnInit {
   onFilter(): void {
     this.nameFilter = this.nameInput;
     this.priceFilter = this.priceInput;
-    console.log('Filter applied:', this.nameFilter, this.priceFilter);
+    // console.log('Filter applied:', this.nameFilter, this.priceFilter);
   }
 
   isInCart(item: Item): boolean {
