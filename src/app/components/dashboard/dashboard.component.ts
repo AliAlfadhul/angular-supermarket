@@ -79,19 +79,19 @@ export class DashboardComponent implements OnInit {
   get filteredItems(): Item[] {
     let filtered = this.items;
 
-    // Filter by category
+
     if (this.selectedCategory !== 'All Items') {
       filtered = filtered.filter(item => item.category === this.selectedCategory);
     }
 
-    // Filter by name
+
     if (this.nameFilter) {
       filtered = filtered.filter(item =>
         item.name.toLowerCase().includes(this.nameFilter.toLowerCase())
       );
     }
 
-    // Filter by price
+
     if (this.priceFilter) {
       const price = parseFloat(this.priceFilter);
       filtered = filtered.filter(item => item.price === price);
