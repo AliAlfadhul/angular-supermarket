@@ -30,6 +30,9 @@ export class DashboardComponent implements OnInit, OnDestroy {
   //store filtered Items
   filteredItems: Item[] = [];
 
+  //store cart count
+  cartCount: number = 0;
+
   //clean up subscriptions
   private unsubscribe$ = new Subject<void>();
 
@@ -40,6 +43,11 @@ export class DashboardComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.loadItems()
     this.loadCategories()
+
+    //subscribe to cart count
+    this.cartService.cartItems$.pipe(takeUntil(this.unsubscribe$)).subscribe(cartItems => {
+      this.cartCount = cartItems.reduce((total, cartItem) => total + cartItem.quantity, 0);
+    })
   }
 
   ngOnDestroy(): void {
@@ -183,9 +191,9 @@ export class DashboardComponent implements OnInit, OnDestroy {
     }
   }
 
-  get cartCount(): number {
-    return this.cartService.getCartCount();
-  }
+  // get cartCount(): number {
+  //   return this.cartService.getCartCount();
+  // }
 
   onGoToCart(): void {
     this.router.navigate(['/cart']).then();
