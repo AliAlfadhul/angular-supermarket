@@ -27,6 +27,9 @@ export class DashboardComponent implements OnInit, OnDestroy {
   showDeleteModal = false
   itemToDelete: Item | null = null;
 
+  //store filtered Items
+  filteredItems: Item[] = [];
+
   //clean up subscriptions
   private unsubscribe$ = new Subject<void>();
 
@@ -50,7 +53,10 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
     //with cleanup
     this.itemService.getItems().pipe(takeUntil(this.unsubscribe$)).subscribe(
-      items => this.items = items
+      items => {
+        this.items = items;
+        this.updateFilteredItems();
+      }
     )
   }
 
@@ -85,7 +91,8 @@ export class DashboardComponent implements OnInit, OnDestroy {
         //with cleanup
         this.itemService.deleteItem(this.itemToDelete.id).pipe(takeUntil(this.unsubscribe$)).subscribe(() => {
           this.items = this.items.filter(item => item.id !== this.itemToDelete?.id);
-        this.closeDeleteModal()
+          this.updateFilteredItems()
+          this.closeDeleteModal()
         })
 
       }
@@ -103,35 +110,61 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
   selectCategory(categoryName: string): void {
     this.selectedCategory = categoryName;
+    this.updateFilteredItems();
   }
 
-  get filteredItems(): Item[] {
+  // get filteredItems(): Item[] {
+  //   let filtered = this.items;
+  //
+  //
+  //   if (this.selectedCategory !== 'All Items') {
+  //     filtered = filtered.filter(item => item.category === this.selectedCategory);
+  //   }
+  //
+  //
+  //   if (this.nameFilter) {
+  //     filtered = filtered.filter(item =>
+  //       item.name.toLowerCase().includes(this.nameFilter.toLowerCase())
+  //     );
+  //   }
+  //
+  //
+  //   if (this.priceFilter) {
+  //     const price = parseFloat(this.priceFilter);
+  //     filtered = filtered.filter(item => item.price === price);
+  //   }
+  //
+  //   return filtered;
+  // }
+
+  updateFilteredItems() {
     let filtered = this.items;
 
+      if (this.selectedCategory !== 'All Items') {
+        filtered = filtered.filter(item => item.category === this.selectedCategory);
+      }
 
-    if (this.selectedCategory !== 'All Items') {
-      filtered = filtered.filter(item => item.category === this.selectedCategory);
-    }
+      if (this.nameFilter) {
+        filtered = filtered.filter(item =>
+          item.name.toLowerCase().includes(this.nameFilter.toLowerCase())
+        );
+      }
 
+      if (this.priceFilter) {
+        const price = parseFloat(this.priceFilter);
+        filtered = filtered.filter(item => item.price === price);
+      }
 
-    if (this.nameFilter) {
-      filtered = filtered.filter(item =>
-        item.name.toLowerCase().includes(this.nameFilter.toLowerCase())
-      );
-    }
+      this.filteredItems = filtered;
 
-
-    if (this.priceFilter) {
-      const price = parseFloat(this.priceFilter);
-      filtered = filtered.filter(item => item.price === price);
-    }
-
-    return filtered;
   }
+
+
 
   onFilter(): void {
     this.nameFilter = this.nameInput;
     this.priceFilter = this.priceInput;
+    this.updateFilteredItems();
     // console.log('Filter applied:', this.nameFilter, this.priceFilter);
   }
 
