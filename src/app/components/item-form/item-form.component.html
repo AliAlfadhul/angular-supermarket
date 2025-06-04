@@ -1,5 +1,4 @@
-<div class="container">
-  <h1 class="app-title">Supermarket App</h1>
+<div>
   <h2 class="form-title">{{ isEdit ? 'Edit Item' : 'Add Item' }}</h2>
 
   <form [formGroup]="itemForm" (ngSubmit)="onSave()" class="form">

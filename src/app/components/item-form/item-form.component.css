@@ -1,17 +1,10 @@
-.container {
-  width: 100vw;
-  height: 100vh;
-  background-color: #888;
-  padding: 20px;
-  margin: 0;
-}
-
-.app-title {
-  color: white;
-  text-align: center;
-  font-size: 60px;
+.error-message {
+  color: #a12530;
+  font-size: 14px;
   font-weight: bold;
-  margin-bottom: 20px;
+  margin-top: 5px;
+  margin-left: 15px;
+  display: block;
 }
 
 .form-title {

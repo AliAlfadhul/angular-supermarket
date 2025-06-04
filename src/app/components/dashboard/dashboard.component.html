@@ -1,8 +1,6 @@
 <div>
-  <h1 class="app-title">Supermarket App</h1>
 
-
-  <div class="tabs">
+<div class="tabs">
     <button (click)="selectCategory('All Items')"
             [class.active]="selectedCategory === 'All Items'">All Items</button>
     <button *ngFor="let cat of categories" (click)="selectCategory(cat.name)"
@@ -47,4 +45,5 @@
       </div>
     </div>
   </div>
+
 </div>

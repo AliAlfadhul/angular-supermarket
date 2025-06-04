@@ -1,7 +1,4 @@
-<div class="container">
-  <h1 class="app-title">Supermarket App</h1>
-
-  <div *ngIf="cartItems.length === 0" class="empty-cart">
+<div *ngIf="cartItems.length === 0" class="empty-cart">
     <h2>Your cart is empty</h2>
     <button (click)="onBackToDashboard()" class="back-btn">Continue Shopping</button>
   </div>
@@ -24,4 +21,3 @@
 
     <button (click)="onBackToDashboard()" class="back-btn">Continue Shopping</button>
   </div>
-</div>

@@ -7,21 +7,6 @@
 html, body {
   background-color: #888;
   font-family: Arial, sans-serif;
+  margin-bottom: 30px;
 }
 
-.items-area {
-  width: 650px;
-  margin: 0 auto;
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
-.error-message {
-  color: #a12530;
-  font-size: 14px;
-  font-weight: bold;
-  margin-top: 5px;
-  margin-left: 15px;
-  display: block;
-}
