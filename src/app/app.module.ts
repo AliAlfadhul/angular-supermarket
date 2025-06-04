@@ -11,6 +11,7 @@ import { DashboardComponent } from './components/dashboard/dashboard.component';
 import { ItemFormComponent } from './components/item-form/item-form.component';
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import { CartComponent } from './components/cart/cart.component';
+import { ItemComponent } from './components/item/item.component';
 
 
 @NgModule({
@@ -19,6 +20,7 @@ import { CartComponent } from './components/cart/cart.component';
     DashboardComponent,
     ItemFormComponent,
     CartComponent,
+    ItemComponent,
   ],
   imports: [
     BrowserModule,

@@ -139,8 +139,8 @@ export class DashboardComponent implements OnInit, OnDestroy {
     return this.cartService.isInCart(item.id);
   }
 
-  onCartToggle(item: Item, event: any): void {
-    if (event.target.checked) {
+  onCartToggle(item: Item, checked: boolean): void {
+    if (checked) {
       this.cartService.addToCart(item);
     } else {
       this.cartService.removeFromCart(item.id);

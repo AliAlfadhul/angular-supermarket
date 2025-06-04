@@ -22,8 +22,8 @@ export class CartComponent implements OnInit {
     });
   }
 
-  onQuantityChange(itemId: number, event: any): void {
-    const newQuantity = parseInt(event.target.value);
+  onQuantityChange(itemId: number, value: string): void {
+    const newQuantity = parseInt(value);
     const item = this.cartItems.find(item => item.id === itemId);
     if (item) {
       item.quantity = newQuantity;

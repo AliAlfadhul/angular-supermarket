@@ -3,8 +3,10 @@
 
 
   <div class="tabs">
-    <button (click)="selectCategory('All Items')" [class.active]="selectedCategory === 'All Items'">All Items</button>
-    <button *ngFor="let cat of categories" (click)="selectCategory(cat.name)" [class.active]="selectedCategory === cat.name">{{ cat.name }}</button>
+    <button (click)="selectCategory('All Items')"
+            [class.active]="selectedCategory === 'All Items'">All Items</button>
+    <button *ngFor="let cat of categories" (click)="selectCategory(cat.name)"
+            [class.active]="selectedCategory === cat.name">{{ cat.name }}</button>
   </div>
 
 
@@ -24,24 +26,16 @@
 
 
   <div class="items-area">
-    <div class="item-card" *ngFor="let item of filteredItems">
-      <input type="checkbox"
-             [checked]="isInCart(item)"
-             (change)="onCartToggle(item, $event)"
-             class="item-checkbox">
+    <app-item
+      *ngFor="let item of filteredItems"
+      [item]="item"
+      [type]="'dashboard'"
+      [isInCart]="isInCart(item)"
+      (editClick)="onEdit($event)"
+      (deleteClick)="onDelete($event)"
+      (cartToggleClick)="onCartToggle($event.item, $event.checked)">
+    </app-item>
 
-      <div class="item-left">
-        <div class="item-name">{{ item.name }}</div>
-        <div class="item-category">{{ item.category }}</div>
-      </div>
-<!--      <div class="item-price">BD {{ item.price.toFixed(3) }}</div>-->
-      <div class="item-price">{{ item.price | currency: 'BHD'
-        :'symbol':'1.3-3' }}</div>
-      <div class="item-buttons">
-        <button class="btn-edit" (click)="onEdit(item)">Edit</button>
-        <button class="btn-delete" (click)="onDelete(item)">Delete</button>
-      </div>
-    </div>
     <div *ngIf="showDeleteModal" class="modal-overlay" (click)="closeDeleteModal()">
       <div class="modal-content" (click)="$event.stopPropagation()">
         <h3>Confirm Delete</h3>
