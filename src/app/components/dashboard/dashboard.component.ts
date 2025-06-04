@@ -89,8 +89,11 @@ export class DashboardComponent implements OnInit, OnDestroy {
       // })
 
         //with cleanup
+        const itemToDelete = this.itemToDelete;
         this.itemService.deleteItem(this.itemToDelete.id).pipe(takeUntil(this.unsubscribe$)).subscribe(() => {
-          this.items = this.items.filter(item => item.id !== this.itemToDelete?.id);
+          this.items = this.items.filter(item => item.id !== itemToDelete.id);
+          //delete from cart as well
+          this.cartService.removeFromCart(itemToDelete.id)
           this.updateFilteredItems()
           this.closeDeleteModal()
         })
