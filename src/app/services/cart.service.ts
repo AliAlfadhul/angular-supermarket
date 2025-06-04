@@ -37,6 +37,18 @@ export class CartService {
     this.cartItemsSubject.next([...currentItems]);
   }
 
+  updateItemInCart(updatedItem: Item): void {
+    const currentItems = this.cartItemsSubject.value;
+    const existingItem = currentItems.find(cartItem => cartItem.id === updatedItem.id);
+
+    if (existingItem) {
+      existingItem.name = updatedItem.name;
+      existingItem.price = updatedItem.price;
+      existingItem.category = updatedItem.category;
+      this.cartItemsSubject.next([...currentItems]);
+    }
+  }
+
   removeFromCart(itemId: number): void {
     const currentItems = this.cartItemsSubject.value.filter(item => item.id !== itemId);
     this.cartItemsSubject.next(currentItems);

@@ -4,6 +4,7 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { ItemService } from '../../services/item.service';
 import {Subject} from "rxjs";
 import {takeUntil} from "rxjs/operators";
+import {CartService} from "../../services/cart.service";
 
 @Component({
   selector: 'app-item-form',
@@ -23,7 +24,8 @@ export class ItemFormComponent implements OnInit, OnDestroy {
     private fb: FormBuilder,
     private router: Router,
     private route: ActivatedRoute,
-    private itemService: ItemService
+    private itemService: ItemService,
+    private cartService: CartService
   ) {
     this.itemForm = this.fb.group({
       name: ['', [Validators.required, Validators.minLength(2)]],
@@ -67,6 +69,8 @@ export class ItemFormComponent implements OnInit, OnDestroy {
       if (this.isEdit) {
         item.id = this.itemId;
         this.itemService.updateItem(item).pipe(takeUntil(this.unsubscribe$)).subscribe(() => {
+          //update cart with new data
+          this.cartService.updateItemInCart(item)
           this.router.navigate(['/']);
         });
       } else {
