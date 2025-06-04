@@ -1,0 +1,158 @@
+
+.item-card {
+  background-color: transparent;
+  border: 2px solid #495057;
+  border-radius: 12px;
+  padding: 18px 20px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.item-checkbox {
+  width: 25px;
+  height: 25px;
+  cursor: pointer;
+  background-color: transparent;
+  border: 2px solid #495057;
+  accent-color: #495057;
+  appearance: none;
+  border-radius: 6px;
+  position: relative;
+  flex-shrink: 0;
+}
+
+.item-checkbox:checked {
+  background-color: transparent;
+}
+
+.item-checkbox:checked::after {
+  content: '✓';
+  position: absolute;
+  top: -3px;
+  left: 4px;
+  color: #495057;
+  font-size: 18px;
+  font-weight: bold;
+}
+
+.item-info {
+  width: 140px;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.item-name {
+  font-weight: bold;
+  font-size: 16px;
+  color: #495057;
+  margin-bottom: 2px;
+}
+
+.item-category {
+  font-size: 14px;
+  color: #495057;
+}
+
+.item-price {
+  font-weight: bold;
+  font-size: 16px;
+  color: #495057;
+  text-align: center;
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.item-buttons {
+  width: 140px;
+  flex-shrink: 0;
+  display: flex;
+  gap: 8px;
+  justify-content: flex-end;
+}
+
+.btn-edit {
+  background-color: #495057;
+  color: white;
+  padding: 8px 16px;
+  border: none;
+  border-radius: 8px;
+  font-size: 14px;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.btn-delete {
+  background-color: #c82333;
+  color: white;
+  padding: 8px 16px;
+  border: none;
+  border-radius: 8px;
+  font-size: 14px;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+
+.cart-item {
+  background-color: transparent;
+  border: 2px solid #495057;
+  border-radius: 12px;
+  padding: 15px;
+  margin-bottom: 15px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 15px;
+}
+
+.item-quantity {
+  display: flex;
+  align-items: center;
+  gap: -2px;
+  color: #495057;
+}
+
+.quantity-input {
+  width: 150px;
+  height: 40px;
+  padding: 8px;
+  margin: 0;
+  text-align: center;
+  background-color: transparent;
+  border: 2px solid #495057;
+  border-radius: 5px 0 0 5px;
+  color: #495057;
+  font-size: 16px;
+  font-weight: bold;
+  z-index: 1;
+  position: relative;
+}
+
+.quantity-input:focus {
+  outline: none;
+  border-color: #495057;
+}
+
+.remove-btn {
+  background-color: #dc3545;
+  color: white;
+  border-radius: 0 8px 8px 0;
+  cursor: pointer;
+  font-size: 16px;
+  min-width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0;
+  border: none;
+}
+
+.remove-btn:hover {
+  background-color: #c82333;
+}
