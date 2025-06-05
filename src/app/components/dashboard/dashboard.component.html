@@ -32,6 +32,10 @@
       <button class="btn-add" (click)="onAdd()">Add</button>
     </div>
 
+    <div *ngIf="filteredItems.length === 0" class="no-items-found">
+      <h3>No items found</h3>
+      <p>Try adjusting your filters</p>
+    </div>
 
     <div class="items-area">
       <app-item
