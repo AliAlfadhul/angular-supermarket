@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import {Item} from "../interfaces";
+import {CartItem, Item} from "../interfaces";
 import {BehaviorSubject} from "rxjs";
 
 @Injectable({
@@ -10,7 +10,7 @@ export class CartService {
   // cartItems: any[] = [];
 
   //reactive cart
-  private cartItemsSubject = new BehaviorSubject<any[]>([]);
+  private cartItemsSubject = new BehaviorSubject<CartItem[]>([]);
 
   //get the current value of cartItems
   cartItems$ = this.cartItemsSubject.asObservable();
@@ -25,13 +25,18 @@ export class CartService {
     if (existing) {
       existing.quantity++;
     } else {
-      currentItems.push({
-        id: item.id,
-        name: item.name,
-        price: item.price,
-        category: item.category,
+      // currentItems.push({
+      //   id: item.id,
+      //   name: item.name,
+      //   price: item.price,
+      //   category: item.category,
+      //   quantity: 1
+      // });
+      const cartItem: CartItem = {
+        ...item,
         quantity: 1
-      });
+      }
+      currentItems.push(cartItem);
     }
 
     this.cartItemsSubject.next([...currentItems]);
@@ -39,14 +44,18 @@ export class CartService {
 
   updateItemInCart(updatedItem: Item): void {
     const currentItems = this.cartItemsSubject.value;
-    const existingItem = currentItems.find(cartItem => cartItem.id === updatedItem.id);
+    // const existingItem = currentItems.find(cartItem => cartItem.id === updatedItem.id);
+    //
+    // if (existingItem) {
+    //   existingItem.name = updatedItem.name;
+    //   existingItem.price = updatedItem.price;
+    //   existingItem.category = updatedItem.category;
+    //   this.cartItemsSubject.next([...currentItems]);
+    // }
+    const updatedItems = currentItems.map(cartItem => cartItem.id === updatedItem.id ?
+      {...updatedItem, quantity: cartItem.quantity} : cartItem);
 
-    if (existingItem) {
-      existingItem.name = updatedItem.name;
-      existingItem.price = updatedItem.price;
-      existingItem.category = updatedItem.category;
-      this.cartItemsSubject.next([...currentItems]);
-    }
+    this.cartItemsSubject.next(updatedItems);
   }
 
   removeFromCart(itemId: number): void {
@@ -54,10 +63,10 @@ export class CartService {
     this.cartItemsSubject.next(currentItems);
   }
 
-  isInCart(itemId: number): boolean {
-    const currentItems = this.cartItemsSubject.value;
-    return currentItems.some(item => item.id === itemId);
-  }
+  // isInCart(itemId: number): boolean {
+  //   const currentItems = this.cartItemsSubject.value;
+  //   return currentItems.some(item => item.id === itemId);
+  // }
 
   getCartCount(): number {
     const currentItems = this.cartItemsSubject.value;

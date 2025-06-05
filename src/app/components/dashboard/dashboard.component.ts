@@ -3,7 +3,7 @@ import {Component, OnDestroy, OnInit} from '@angular/core';
 import {ItemService} from "../../services/item.service";
 import {Router} from "@angular/router";
 import {CartService} from "../../services/cart.service";
-import {Category, Item} from "../../interfaces";
+import {CartItem, Category, Item} from "../../interfaces";
 import {Subject} from "rxjs";
 import {takeUntil} from "rxjs/operators";
 
@@ -33,6 +33,12 @@ export class DashboardComponent implements OnInit, OnDestroy {
   //store cart count
   cartCount: number = 0;
 
+  //items in cart
+  cartItems: CartItem[] = [];
+
+  //set to check if item is in cart
+  cartItemIds = new Set<number>();
+
   loading: boolean = true;
 
   //clean up subscriptions
@@ -49,7 +55,11 @@ export class DashboardComponent implements OnInit, OnDestroy {
     //subscribe to cart count
     this.cartService.cartItems$.pipe(takeUntil(this.unsubscribe$)).subscribe(cartItems => {
       this.cartCount = cartItems.reduce((total, cartItem) => total + cartItem.quantity, 0);
+      this.cartItems = cartItems;
+      //update set only when cart changes
+      this.cartItemIds = new Set(cartItems.map(cartItem => cartItem.id));
     })
+
   }
 
   ngOnDestroy(): void {
@@ -173,8 +183,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
   }
 
-
-
   onFilter(): void {
     this.nameFilter = this.nameInput;
     this.priceFilter = this.priceInput;
@@ -182,9 +190,10 @@ export class DashboardComponent implements OnInit, OnDestroy {
     // console.log('Filter applied:', this.nameFilter, this.priceFilter);
   }
 
-  isInCart(item: Item): boolean {
-    return this.cartService.isInCart(item.id);
-  }
+  // isInCart(item: Item): boolean {
+  //   // console.log('item in cart', item);
+  //   return this.cartService.isInCart(item.id);
+  // }
 
   onCartToggle(item: Item, checked: boolean): void {
     if (checked) {

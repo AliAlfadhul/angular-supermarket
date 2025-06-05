@@ -1,11 +1,13 @@
 <div>
 
-  <div *ngIf="loading" class="loading-container">
-    <div class="loading-spinner"></div>
-    <p>Loading items...</p>
-  </div>
 
-  <div *ngIf="!loading">
+
+<!--  <ng-container *ngIf="loading">-->
+<!--    <ng-container *ngTemplateOutlet="loader"></ng-container>-->
+<!--  </ng-container>-->
+
+  <div *ngIf="!loading else loader ">
+
 
     <div class="tabs">
       <button (click)="selectCategory('All Items')"
@@ -42,7 +44,7 @@
         *ngFor="let item of filteredItems"
         [item]="item"
         [type]="'dashboard'"
-        [isInCart]="isInCart(item)"
+        [isInCart]="cartItemIds.has(item.id)"
         (editClick)="onEdit($event)"
         (deleteClick)="onDelete($event)"
         (cartToggleClick)="onCartToggle($event.item, $event.checked)">
@@ -63,3 +65,18 @@
   </div>
 
 </div>
+
+
+<ng-template #test>
+  <div  class="loading-container">
+    <div class="loading-spinner"></div>
+    <p>Loading test...</p>
+  </div>
+</ng-template>
+
+<ng-template #loader>
+  <div  class="loading-container">
+    <div class="loading-spinner"></div>
+    <p>Loading items...</p>
+  </div>
+</ng-template>
