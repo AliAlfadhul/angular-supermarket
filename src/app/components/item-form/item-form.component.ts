@@ -18,6 +18,9 @@ export class ItemFormComponent implements OnInit, OnDestroy {
   isEdit = false;
   itemId = 0;
 
+  loading:boolean = false;
+  saving:boolean = false;
+
   private unsubscribe$ = new Subject<void>();
 
   constructor(
@@ -41,6 +44,7 @@ export class ItemFormComponent implements OnInit, OnDestroy {
     if (id) {
       this.isEdit = true;
       this.itemId = +id;
+      this.loading = true;
       this.loadItem();
     }
   }
@@ -59,22 +63,26 @@ export class ItemFormComponent implements OnInit, OnDestroy {
   loadItem(): void {
     this.itemService.getItem(this.itemId).pipe(takeUntil(this.unsubscribe$)).subscribe(item => {
       this.itemForm.patchValue(item);
+      this.loading = false;
     });
   }
 
   onSave(): void {
     if (this.itemForm.valid) {
       const item = this.itemForm.value;
+      this.saving = true;
 
       if (this.isEdit) {
         item.id = this.itemId;
         this.itemService.updateItem(item).pipe(takeUntil(this.unsubscribe$)).subscribe(() => {
           //update cart with new data
           this.cartService.updateItemInCart(item)
+          this.saving = false;
           this.router.navigate(['/']);
         });
       } else {
         this.itemService.addItem(item).pipe(takeUntil(this.unsubscribe$)).subscribe(() => {
+          this.saving = false;
           this.router.navigate(['/']);
         });
       }

@@ -1,7 +1,12 @@
 <div>
   <h2 class="form-title">{{ isEdit ? 'Edit Item' : 'Add Item' }}</h2>
 
-  <form [formGroup]="itemForm" (ngSubmit)="onSave()" class="form">
+  <div *ngIf="loading" class="loading-container">
+    <div class="loading-spinner"></div>
+    <p>Loading item...</p>
+  </div>
+
+  <form *ngIf="!loading" [formGroup]="itemForm" (ngSubmit)="onSave()" class="form">
 
     <div class="form-group">
       <label>Name</label>
@@ -35,7 +40,12 @@
 
     <div class="form-buttons">
       <button type="button" class="btn-cancel" (click)="onCancel()">Cancel</button>
-      <button type="submit" class="btn-save">Save</button>
+      <button type="submit" class="btn-save" [disabled]="saving">
+        <span *ngIf="!saving">Save</span>
+        <span *ngIf="saving">Saving...</span>
+      </button>
     </div>
+
   </form>
+
 </div>

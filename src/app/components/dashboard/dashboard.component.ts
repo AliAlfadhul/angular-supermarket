@@ -33,6 +33,8 @@ export class DashboardComponent implements OnInit, OnDestroy {
   //store cart count
   cartCount: number = 0;
 
+  loading: boolean = true;
+
   //clean up subscriptions
   private unsubscribe$ = new Subject<void>();
 
@@ -64,6 +66,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
       items => {
         this.items = items;
         this.updateFilteredItems();
+        this.loading = false;
       }
     )
   }

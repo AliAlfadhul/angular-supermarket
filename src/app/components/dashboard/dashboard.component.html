@@ -1,49 +1,61 @@
 <div>
 
-<div class="tabs">
-    <button (click)="selectCategory('All Items')"
-            [class.active]="selectedCategory === 'All Items'">All Items</button>
-    <button *ngFor="let cat of categories" (click)="selectCategory(cat.name)"
-            [class.active]="selectedCategory === cat.name">{{ cat.name }}</button>
+  <div *ngIf="loading" class="loading-container">
+    <div class="loading-spinner"></div>
+    <p>Loading items...</p>
   </div>
 
+  <div *ngIf="!loading">
 
-  <div class="filter-section">
-    <input type="text" [(ngModel)]="nameInput" placeholder="Name ...">
-    <input type="number" [(ngModel)]="priceInput" placeholder="Price ..." step="0.01">
-    <button (click)="onFilter()">Filter</button>
-  </div>
+    <div class="tabs">
+      <button (click)="selectCategory('All Items')"
+              [class.active]="selectedCategory === 'All Items'">All Items
+      </button>
+      <button *ngFor="let cat of categories" (click)="selectCategory(cat.name)"
+              [class.active]="selectedCategory === cat.name">{{ cat.name }}
+      </button>
 
-
-  <div class="top-actions">
-    <div class="cart-icon" (click)="onGoToCart()">
-      🛒 <span *ngIf="cartCount > 0" class="cart-count">{{ cartCount }}</span>
     </div>
-    <button class="btn-add" (click)="onAdd()">Add</button>
-  </div>
 
 
-  <div class="items-area">
-    <app-item
-      *ngFor="let item of filteredItems"
-      [item]="item"
-      [type]="'dashboard'"
-      [isInCart]="isInCart(item)"
-      (editClick)="onEdit($event)"
-      (deleteClick)="onDelete($event)"
-      (cartToggleClick)="onCartToggle($event.item, $event.checked)">
-    </app-item>
+    <div class="filter-section">
+      <input type="text" [(ngModel)]="nameInput" placeholder="Name ...">
+      <input type="number" [(ngModel)]="priceInput" placeholder="Price ..." step="0.01">
+      <button (click)="onFilter()">Filter</button>
+    </div>
 
-    <div *ngIf="showDeleteModal" class="modal-overlay" (click)="closeDeleteModal()">
-      <div class="modal-content" (click)="$event.stopPropagation()">
-        <h3>Confirm Delete</h3>
-        <p>Are you sure you want to delete "{{ itemToDelete?.name }}"?</p>
-        <div class="modal-buttons">
-          <button class="btn-cancel" (click)="closeDeleteModal()">Cancel</button>
-          <button class="btn-confirm" (click)="confirmDelete()">Delete</button>
+
+    <div class="top-actions">
+      <div class="cart-icon" (click)="onGoToCart()">
+        🛒 <span *ngIf="cartCount > 0" class="cart-count">{{ cartCount }}</span>
+      </div>
+      <button class="btn-add" (click)="onAdd()">Add</button>
+    </div>
+
+
+    <div class="items-area">
+      <app-item
+        *ngFor="let item of filteredItems"
+        [item]="item"
+        [type]="'dashboard'"
+        [isInCart]="isInCart(item)"
+        (editClick)="onEdit($event)"
+        (deleteClick)="onDelete($event)"
+        (cartToggleClick)="onCartToggle($event.item, $event.checked)">
+      </app-item>
+
+      <div *ngIf="showDeleteModal" class="modal-overlay" (click)="closeDeleteModal()">
+        <div class="modal-content" (click)="$event.stopPropagation()">
+          <h3>Confirm Delete</h3>
+          <p>Are you sure you want to delete "{{ itemToDelete?.name }}"?</p>
+          <div class="modal-buttons">
+            <button class="btn-cancel" (click)="closeDeleteModal()">Cancel</button>
+            <button class="btn-confirm" (click)="confirmDelete()">Delete</button>
+          </div>
         </div>
       </div>
     </div>
+
   </div>
 
 </div>
