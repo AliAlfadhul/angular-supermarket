@@ -18,27 +18,12 @@ export class CartService {
   constructor() { }
 
   addToCart(item: Item): void {
-    //access the latest cart array
     const currentItems = this.cartItemsSubject.value;
-    const existing = currentItems.find(cartItem => cartItem.id === item.id);
-
-    if (existing) {
-      existing.quantity++;
-    } else {
-      // currentItems.push({
-      //   id: item.id,
-      //   name: item.name,
-      //   price: item.price,
-      //   category: item.category,
-      //   quantity: 1
-      // });
-      const cartItem: CartItem = {
-        ...item,
-        quantity: 1
-      }
-      currentItems.push(cartItem);
+    const cartItem: CartItem = {
+      ...item,
+      quantity: 1
     }
-
+    currentItems.push(cartItem);
     this.cartItemsSubject.next([...currentItems]);
   }
 
