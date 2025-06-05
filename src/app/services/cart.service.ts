@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import {CartItem, Item} from "../interfaces";
-import {BehaviorSubject} from "rxjs";
+import {BehaviorSubject, Observable} from "rxjs";
+import {HttpClient} from "@angular/common/http";
 
 @Injectable({
   providedIn: 'root'
@@ -15,7 +16,33 @@ export class CartService {
   //get the current value of cartItems
   cartItems$ = this.cartItemsSubject.asObservable();
 
-  constructor() { }
+  private cartUrl = 'api/cartItems';
+
+  constructor(private http: HttpClient) {
+    this.loadCartItems()
+  }
+
+  getCartItems(): Observable<CartItem[]> {
+    return this.http.get<CartItem[]>(this.cartUrl);
+  }
+
+  addToCartItem(item: CartItem): Observable<CartItem> {
+    return this.http.post<CartItem>(this.cartUrl, item);
+  }
+
+  deleteFromCartItem(itemId: number): Observable<CartItem> {
+    return this.http.delete<CartItem>(`${this.cartUrl}/${itemId}`);
+  }
+
+  updateCartItem(item: CartItem): Observable<CartItem> {
+    return this.http.put<CartItem>(this.cartUrl, item);
+  }
+
+  loadCartItems() {
+    this.getCartItems().subscribe(cartItems => {
+      this.cartItemsSubject.next(cartItems);
+    });
+  }
 
   addToCart(item: Item): void {
     const currentItems = this.cartItemsSubject.value;
@@ -23,29 +50,40 @@ export class CartService {
       ...item,
       quantity: 1
     }
-    currentItems.push(cartItem);
-    this.cartItemsSubject.next([...currentItems]);
+    // currentItems.push(cartItem);
+    // this.cartItemsSubject.next([...currentItems]);
+    this.addToCartItem(cartItem).subscribe(cartItem => {
+      this.loadCartItems();
+    });
   }
 
   updateItemInCart(updatedItem: Item): void {
     const currentItems = this.cartItemsSubject.value;
-    // const existingItem = currentItems.find(cartItem => cartItem.id === updatedItem.id);
-    //
+    const existingItem = currentItems.find(cartItem => cartItem.id === updatedItem.id);
+
     // if (existingItem) {
     //   existingItem.name = updatedItem.name;
     //   existingItem.price = updatedItem.price;
     //   existingItem.category = updatedItem.category;
     //   this.cartItemsSubject.next([...currentItems]);
     // }
-    const updatedItems = currentItems.map(cartItem => cartItem.id === updatedItem.id ?
-      {...updatedItem, quantity: cartItem.quantity} : cartItem);
-
-    this.cartItemsSubject.next(updatedItems);
+    if (existingItem) {
+      const updatedCartItem: CartItem = {
+        ...updatedItem,
+        quantity: existingItem.quantity
+      };
+      this.updateCartItem(updatedCartItem).subscribe(cartItem => {
+        this.loadCartItems();
+      })
+    }
   }
 
   removeFromCart(itemId: number): void {
-    const currentItems = this.cartItemsSubject.value.filter(item => item.id !== itemId);
-    this.cartItemsSubject.next(currentItems);
+    // const currentItems = this.cartItemsSubject.value.filter(item => item.id !== itemId);
+    // this.cartItemsSubject.next(currentItems);
+    this.deleteFromCartItem(itemId).subscribe(() =>{
+      this.loadCartItems();
+    })
   }
 
   // isInCart(itemId: number): boolean {

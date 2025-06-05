@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { InMemoryDbService } from 'angular-in-memory-web-api';
-import { Item, Category } from "./interfaces";
+import {Item, Category, CartItem} from "./interfaces";
 
 @Injectable({
   providedIn: 'root',
@@ -23,7 +23,10 @@ export class InMemoryDataService implements InMemoryDbService {
       { id: 12, name: 'Drinks' },
       { id: 13, name: 'Snacks' },
     ];
-    return {items, categories};
+    const cartItems: CartItem[] = [];
+
+    //add cart items to store cart items and use http services
+    return {items, categories, cartItems};
   }
 
   // Overrides the genId method to ensure that a hero always has an id.
@@ -31,7 +34,7 @@ export class InMemoryDataService implements InMemoryDbService {
   // the method below returns the initial number (11).
   // if the heroes array is not empty, the method below returns the highest
   // hero id + 1.
-  genId(elements: Item[] | Category[]): number {
+  genId(elements: Item[] | Category[] | CartItem[]): number {
     return elements.length > 0 ? Math.max(...elements.map(element => element.id)) + 1 : 1;
   }
 }
