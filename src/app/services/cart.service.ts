@@ -45,7 +45,7 @@ export class CartService {
   }
 
   addToCart(item: Item): void {
-    const currentItems = this.cartItemsSubject.value;
+    // const currentItems = this.cartItemsSubject.value;
     const cartItem: CartItem = {
       ...item,
       quantity: 1
@@ -53,7 +53,10 @@ export class CartService {
     // currentItems.push(cartItem);
     // this.cartItemsSubject.next([...currentItems]);
     this.addToCartItem(cartItem).subscribe(cartItem => {
-      this.loadCartItems();
+      // this.loadCartItems();
+      const currentCartItems = this.cartItemsSubject.value
+      currentCartItems.push(cartItem);
+      this.cartItemsSubject.next([...currentCartItems]);
     });
   }
 
@@ -68,13 +71,22 @@ export class CartService {
     //   this.cartItemsSubject.next([...currentItems]);
     // }
     if (existingItem) {
+
       const updatedCartItem: CartItem = {
         ...updatedItem,
         quantity: existingItem.quantity
       };
-      this.updateCartItem(updatedCartItem).subscribe(cartItem => {
-        this.loadCartItems();
+
+      this.updateCartItem(updatedCartItem).subscribe(savedItem => {
+        // this.loadCartItems();
+        const currentCartItems = this.cartItemsSubject.value
+        const index = currentCartItems.findIndex(cartItem => cartItem.id === savedItem.id);
+        if (index !== -1) {
+          currentCartItems[index] = savedItem
+          this.cartItemsSubject.next([...currentCartItems]);
+        }
       })
+
     }
   }
 
@@ -82,7 +94,9 @@ export class CartService {
     // const currentItems = this.cartItemsSubject.value.filter(item => item.id !== itemId);
     // this.cartItemsSubject.next(currentItems);
     this.deleteFromCartItem(itemId).subscribe(() =>{
-      this.loadCartItems();
+      const currentCartItems = this.cartItemsSubject.value
+      const filteredItems = currentCartItems.filter(item => item.id !== itemId);
+      this.cartItemsSubject.next(filteredItems);
     })
   }
 
