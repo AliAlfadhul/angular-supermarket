@@ -22,6 +22,9 @@ export class CartService {
   //store items
   private items: Item[] = [];
 
+  //prevent rapid click bug
+  private isProcessing = false;
+
   constructor(private http: HttpClient, private itemService: ItemService) {
     this.loadCartItems();
     this.loadItems();
@@ -82,15 +85,30 @@ export class CartService {
 
   addToCart(item: Item): void {
 
+    if(this.isProcessing) return;
+
+    const exists = this.cartItemsSubject.value.
+    find(cartItem => cartItem.itemId === item.id);
+
+    if(exists) return;
+
+    this.isProcessing = true;
+
     const cartItem: any = {
       itemId: item.id,
       quantity: 1
     }
 
-    this.addToCartItem(cartItem).subscribe(addedCartItem => {
-      const currentCartItems = this.cartItemsSubject.value
-      currentCartItems.push(addedCartItem);
-      this.cartItemsSubject.next([...currentCartItems]);
+    this.addToCartItem(cartItem).subscribe({
+      //prevent bugs on multiple rapid clicks
+      next: (addedCartItem)=> {
+        const currentCartItems = this.cartItemsSubject.value
+        currentCartItems.push(addedCartItem);
+        this.cartItemsSubject.next([...currentCartItems]);
+        this.isProcessing = false;
+    }, error: () => {
+        this.isProcessing = false;
+      }
     });
 
   }

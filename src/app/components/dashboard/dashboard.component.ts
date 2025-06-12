@@ -57,7 +57,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
       this.cartCount = cartItems.reduce((total, cartItem) => total + cartItem.quantity, 0);
       this.cartItems = cartItems;
       //update set only when cart changes
-      this.cartItemIds = new Set(cartItems.map(cartItem => cartItem.id));
+      this.cartItemIds = new Set(cartItems.map(cartItem => cartItem.itemId));
     })
 
   }
