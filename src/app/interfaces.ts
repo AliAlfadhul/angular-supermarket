@@ -10,6 +10,8 @@ export interface Category {
   name: string;
 }
 
-export interface CartItem extends Item {
+export interface CartItem {
+  id: number;
+  itemId: number;
   quantity: number;
 }

@@ -2,13 +2,14 @@ import { Injectable } from '@angular/core';
 import {CartItem, Item} from "../interfaces";
 import {BehaviorSubject, Observable} from "rxjs";
 import {HttpClient} from "@angular/common/http";
+import {ItemService} from "./item.service";
 
 @Injectable({
   providedIn: 'root'
 })
 export class CartService {
 
-  // cartItems: any[] = [];
+  //cartItems: any[] = [];
 
   //reactive cart
   private cartItemsSubject = new BehaviorSubject<CartItem[]>([]);
@@ -18,8 +19,12 @@ export class CartService {
 
   private cartUrl = 'api/cartItems';
 
-  constructor(private http: HttpClient) {
-    this.loadCartItems()
+  //store items
+  private items: Item[] = [];
+
+  constructor(private http: HttpClient, private itemService: ItemService) {
+    this.loadCartItems();
+    this.loadItems();
   }
 
   getCartItems(): Observable<CartItem[]> {
@@ -30,88 +35,104 @@ export class CartService {
     return this.http.post<CartItem>(this.cartUrl, item);
   }
 
-  deleteFromCartItem(itemId: number): Observable<CartItem> {
-    return this.http.delete<CartItem>(`${this.cartUrl}/${itemId}`);
+  deleteFromCartItem(cartItemId: number): Observable<CartItem> {
+    return this.http.delete<CartItem>(`${this.cartUrl}/${cartItemId}`);
   }
 
   updateCartItem(item: CartItem): Observable<CartItem> {
-    return this.http.put<CartItem>(this.cartUrl, item);
+    return this.http.put<CartItem>(`${this.cartUrl}/${item.id}`, item);
   }
 
   loadCartItems() {
+
     this.getCartItems().subscribe(cartItems => {
       this.cartItemsSubject.next(cartItems);
     });
+
+  }
+
+  loadItems() {
+
+    this.itemService.getItems().subscribe(items => {
+      this.items = items;
+      this.cartItemsSubject.next([...this.cartItemsSubject.value]);
+    });
+
+  }
+
+  //to join cart items with item details
+  getCartItemsDetails(): any[]{
+
+    const cartItems = this.cartItemsSubject.value;
+
+    return cartItems.map(cartItem => {
+      const item = this.items.find(item=> item.id === cartItem.itemId);
+      //merge with adding unique identifier
+      return{
+        ...cartItem,
+        ...item,
+        id: cartItem.id
+      };
+    }).filter(item => item.name);
+  }
+
+  refreshItems() {
+    this.loadItems()
   }
 
   addToCart(item: Item): void {
-    // const currentItems = this.cartItemsSubject.value;
-    const cartItem: CartItem = {
-      ...item,
+
+    const cartItem: any = {
+      itemId: item.id,
       quantity: 1
     }
-    // currentItems.push(cartItem);
-    // this.cartItemsSubject.next([...currentItems]);
-    this.addToCartItem(cartItem).subscribe(cartItem => {
-      // this.loadCartItems();
+
+    this.addToCartItem(cartItem).subscribe(addedCartItem => {
       const currentCartItems = this.cartItemsSubject.value
-      currentCartItems.push(cartItem);
+      currentCartItems.push(addedCartItem);
       this.cartItemsSubject.next([...currentCartItems]);
     });
+
   }
 
-  updateItemInCart(updatedItem: Item): void {
-    const currentItems = this.cartItemsSubject.value;
-    const existingItem = currentItems.find(cartItem => cartItem.id === updatedItem.id);
+  updateQuantity(cartItemId: number, newQuantity: number): void {
 
-    // if (existingItem) {
-    //   existingItem.name = updatedItem.name;
-    //   existingItem.price = updatedItem.price;
-    //   existingItem.category = updatedItem.category;
-    //   this.cartItemsSubject.next([...currentItems]);
-    // }
-    if (existingItem) {
+    const currentCartItems = this.cartItemsSubject.value;
+    const cartItemIndex = currentCartItems.findIndex(item => item.id === cartItemId);
 
-      const updatedCartItem: CartItem = {
-        ...updatedItem,
-        quantity: existingItem.quantity
-      };
-
-      this.updateCartItem(updatedCartItem).subscribe(savedItem => {
-        // this.loadCartItems();
-        const currentCartItems = this.cartItemsSubject.value
-        const index = currentCartItems.findIndex(cartItem => cartItem.id === savedItem.id);
-        if (index !== -1) {
-          currentCartItems[index] = savedItem
-          this.cartItemsSubject.next([...currentCartItems]);
-        }
-      })
-
+    if (cartItemIndex !== -1) {
+      currentCartItems[cartItemIndex].quantity = newQuantity;
+      this.cartItemsSubject.next([...currentCartItems]);
+      this.updateCartItem(currentCartItems[cartItemIndex]).subscribe();
     }
+
   }
 
   removeFromCart(itemId: number): void {
-    // const currentItems = this.cartItemsSubject.value.filter(item => item.id !== itemId);
-    // this.cartItemsSubject.next(currentItems);
-    this.deleteFromCartItem(itemId).subscribe(() =>{
-      const currentCartItems = this.cartItemsSubject.value
-      const filteredItems = currentCartItems.filter(item => item.id !== itemId);
-      this.cartItemsSubject.next(filteredItems);
-    })
-  }
 
-  // isInCart(itemId: number): boolean {
-  //   const currentItems = this.cartItemsSubject.value;
-  //   return currentItems.some(item => item.id === itemId);
-  // }
+    const currentCartItems = this.cartItemsSubject.value;
+    const cartItem = currentCartItems.find(cartItem => cartItem.itemId === itemId);
 
-  getCartCount(): number {
-    const currentItems = this.cartItemsSubject.value;
-    return currentItems.reduce((total, item) => total + item.quantity, 0);
+    if(cartItem) {
+      this.deleteFromCartItem(cartItem.id).subscribe(() =>{
+        const filteredItems = currentCartItems.filter(item => item.id !== cartItem.id);
+        this.cartItemsSubject.next(filteredItems);
+      })
+    }
+
   }
 
   getTotalPrice(): number {
-    const currentItems = this.cartItemsSubject.value;
-    return currentItems.reduce((total, item) => total + (item.price * item.quantity), 0);
+
+    const cartItemsWithDetail = this.getCartItemsDetails();
+
+    return cartItemsWithDetail.reduce((total, item) => {
+      if (item.price && item.quantity) {
+        return total + (item.price * item.quantity);
+      }
+      return total;
+    }, 0);
+
   }
+
 }

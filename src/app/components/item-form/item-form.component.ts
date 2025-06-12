@@ -76,12 +76,14 @@ export class ItemFormComponent implements OnInit, OnDestroy {
         item.id = this.itemId;
         this.itemService.updateItem(item).pipe(takeUntil(this.unsubscribe$)).subscribe(() => {
           //update cart with new data
-          this.cartService.updateItemInCart(item)
+          // this.cartService.updateItemInCart(item.id)
+          this.cartService.refreshItems()
           this.saving = false;
           this.router.navigate(['/']);
         });
       } else {
         this.itemService.addItem(item).pipe(takeUntil(this.unsubscribe$)).subscribe(() => {
+          this.cartService.refreshItems()
           this.saving = false;
           this.router.navigate(['/']);
         });

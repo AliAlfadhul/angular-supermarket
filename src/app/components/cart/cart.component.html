@@ -11,7 +11,7 @@
         [item]="item"
         [type]="'cart'"
         (removeItemClick)="onRemoveItem($event)"
-        (quantityChangeEvent)="onQuantityChange($event.itemId, $event.value)">
+        (quantityChangeEvent)="onQuantityChange($event.cartItemId, $event.value)">
       </app-item>
     </div>
 

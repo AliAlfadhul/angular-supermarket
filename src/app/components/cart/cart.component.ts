@@ -12,7 +12,7 @@ import {takeUntil} from "rxjs/operators";
 })
 export class CartComponent implements OnInit, OnDestroy {
 
-  cartItems: CartItem[] = [];
+  cartItems: any[] = [];
 
   private destroy$ = new Subject<void>();
 
@@ -23,8 +23,8 @@ export class CartComponent implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit(): void{
-    this.cartService.cartItems$.pipe(takeUntil(this.destroy$)).subscribe(data => {
-      this.cartItems = data;
+    this.cartService.cartItems$.pipe(takeUntil(this.destroy$)).subscribe(() => {
+      this.cartItems = this.cartService.getCartItemsDetails();
     });
   }
 
@@ -33,16 +33,19 @@ export class CartComponent implements OnInit, OnDestroy {
     this.destroy$.complete();
   }
 
-  onQuantityChange(itemId: number, value: string): void {
+  onQuantityChange(cartItemId: number, value: string): void {
     const newQuantity = parseInt(value);
-    const item = this.cartItems.find(item => item.id === itemId);
-    if (item) {
-      item.quantity = newQuantity;
+    if (newQuantity > 0) {
+      this.cartService.updateQuantity(cartItemId, newQuantity);
     }
   }
 
-  onRemoveItem(itemId: number): void {
-    this.cartService.removeFromCart(itemId);
+  onRemoveItem(cartItemId: number): void {
+    // this.cartService.removeFromCart(itemId);
+    const cartItem: CartItem = this.cartItems.find(item => item.id === cartItemId);
+    if (cartItem) {
+      this.cartService.removeFromCart(cartItem.itemId)
+    }
   }
 
   onBackToDashboard(): void {

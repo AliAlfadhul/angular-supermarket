@@ -30,7 +30,7 @@
     <input #quantityInput
            type="number"
            [value]="item.quantity"
-           (change)="quantityChangeEvent.emit({itemId: item.id, value: quantityInput.value})"
+           (change)="quantityChangeEvent.emit({cartItemId: item.id, value: quantityInput.value})"
            min="1"
            class="quantity-input">
     <button (click)="removeItemClick.emit(item.id)" class="remove-btn">
