@@ -75,8 +75,6 @@ export class ItemFormComponent implements OnInit, OnDestroy {
       if (this.isEdit) {
         item.id = this.itemId;
         this.itemService.updateItem(item).pipe(takeUntil(this.unsubscribe$)).subscribe(() => {
-          //update cart with new data
-          // this.cartService.updateItemInCart(item.id)
           this.cartService.refreshItems()
           this.saving = false;
           this.router.navigate(['/']);
@@ -89,7 +87,6 @@ export class ItemFormComponent implements OnInit, OnDestroy {
         });
       }
     } else {
-      // SHOW VALIDATION ERRORS
       this.itemForm.markAllAsTouched();
       console.log('Form is invalid!');
     }

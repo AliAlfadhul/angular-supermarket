@@ -41,7 +41,6 @@ export class CartComponent implements OnInit, OnDestroy {
   }
 
   onRemoveItem(cartItemId: number): void {
-    // this.cartService.removeFromCart(itemId);
     const cartItem: CartItem = this.cartItems.find(item => item.id === cartItemId);
     if (cartItem) {
       this.cartService.removeFromCart(cartItem.itemId)

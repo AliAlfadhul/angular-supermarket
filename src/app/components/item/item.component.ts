@@ -7,22 +7,50 @@ import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 })
 export class ItemComponent implements OnInit {
 
-  //Take input from cart and dashboard (default type is dashboard)
+
   @Input() item: any;
   @Input() type: 'dashboard' | 'cart' = 'dashboard';
   @Input() isInCart: boolean = false;
 
-  //Take event clicks from cart and dashboard
+
   @Output() editClick = new EventEmitter();
   @Output() deleteClick = new EventEmitter();
   @Output() cartToggleClick = new EventEmitter();
-  //cart events
+
   @Output() removeItemClick = new EventEmitter();
   @Output() quantityChangeEvent = new EventEmitter();
 
   constructor() { }
 
   ngOnInit(): void {
+  }
+
+  onCartToggleChange(event: Event): void {
+    const checkbox = event.target as HTMLInputElement;
+    this.cartToggleClick.emit({
+      item: this.item,
+      checked: checkbox.checked,
+    });
+  }
+
+  onQuantityChange(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    this.quantityChangeEvent.emit({
+      cartItemId: this.item.id,
+      value: input.value,
+    })
+  }
+
+  onEditClick(): void {
+    this.editClick.emit(this.item);
+  }
+
+  onDeleteClick(): void {
+    this.deleteClick.emit(this.item);
+  }
+
+  onRemoveClick(): void {
+    this.removeItemClick.emit(this.item.id);
   }
 
 }

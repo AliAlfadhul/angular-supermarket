@@ -1,13 +1,6 @@
 <div>
 
-
-
-<!--  <ng-container *ngIf="loading">-->
-<!--    <ng-container *ngTemplateOutlet="loader"></ng-container>-->
-<!--  </ng-container>-->
-
   <div *ngIf="!loading else loader ">
-
 
     <div class="tabs">
       <button (click)="selectCategory('All Items')"
@@ -16,16 +9,13 @@
       <button *ngFor="let cat of categories" (click)="selectCategory(cat.name)"
               [class.active]="selectedCategory === cat.name">{{ cat.name }}
       </button>
-
     </div>
-
 
     <div class="filter-section">
       <input type="text" [(ngModel)]="nameInput" placeholder="Name ...">
       <input type="number" [(ngModel)]="priceInput" placeholder="Price ..." step="0.01">
       <button (click)="onFilter()">Filter</button>
     </div>
-
 
     <div class="top-actions">
       <div class="cart-icon" (click)="onGoToCart()">
@@ -65,14 +55,6 @@
   </div>
 
 </div>
-
-
-<ng-template #test>
-  <div  class="loading-container">
-    <div class="loading-spinner"></div>
-    <p>Loading test...</p>
-  </div>
-</ng-template>
 
 <ng-template #loader>
   <div  class="loading-container">

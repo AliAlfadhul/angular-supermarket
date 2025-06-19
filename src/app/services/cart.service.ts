@@ -9,20 +9,14 @@ import {ItemService} from "./item.service";
 })
 export class CartService {
 
-  //cartItems: any[] = [];
-
-  //reactive cart
   private cartItemsSubject = new BehaviorSubject<CartItem[]>([]);
 
-  //get the current value of cartItems
   cartItems$ = this.cartItemsSubject.asObservable();
 
   private cartUrl = 'api/cartItems';
 
-  //store items
   private items: Item[] = [];
 
-  //prevent rapid click bug
   private isProcessing = false;
 
   constructor(private http: HttpClient, private itemService: ItemService) {
@@ -63,14 +57,12 @@ export class CartService {
 
   }
 
-  //to join cart items with item details
   getCartItemsDetails(): any[]{
 
     const cartItems = this.cartItemsSubject.value;
 
     return cartItems.map(cartItem => {
       const item = this.items.find(item=> item.id === cartItem.itemId);
-      //merge with adding unique identifier
       return{
         ...cartItem,
         ...item,
@@ -100,7 +92,6 @@ export class CartService {
     }
 
     this.addToCartItem(cartItem).subscribe({
-      //prevent bugs on multiple rapid clicks
       next: (addedCartItem)=> {
         const currentCartItems = this.cartItemsSubject.value
         currentCartItems.push(addedCartItem);

@@ -1,11 +1,11 @@
 <div *ngIf="cartItems.length === 0" class="empty-cart">
     <h2>Your cart is empty</h2>
-    <button (click)="onBackToDashboard()" class="back-btn">Continue Shopping</button>
-  </div>
+  <ng-container *ngTemplateOutlet="continueShoppingBtn"></ng-container>
+</div>
 
-  <div *ngIf="cartItems.length > 0">
+<div *ngIf="cartItems.length > 0">
 
-    <div class="cart-items">
+  <div class="cart-items">
       <app-item
         *ngFor="let item of cartItems"
         [item]="item"
@@ -13,11 +13,15 @@
         (removeItemClick)="onRemoveItem($event)"
         (quantityChangeEvent)="onQuantityChange($event.cartItemId, $event.value)">
       </app-item>
-    </div>
-
-    <div class="total-section">
-      <strong>Total Price: BD {{ totalPrice.toFixed(3) }}</strong>
-    </div>
-
-    <button (click)="onBackToDashboard()" class="back-btn">Continue Shopping</button>
   </div>
+
+  <div class="total-section">
+      <strong>Total Price: BD {{ totalPrice.toFixed(3) }}</strong>
+  </div>
+
+  <ng-container *ngTemplateOutlet="continueShoppingBtn"></ng-container>
+</div>
+
+<ng-template #continueShoppingBtn>
+  <button (click)="onBackToDashboard()" class="back-btn">Continue Shopping</button>
+</ng-template>

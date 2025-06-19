@@ -25,7 +25,6 @@ export class InMemoryDataService implements InMemoryDbService {
     ];
     const cartItems: CartItem[] = [];
 
-    //add cart items to store cart items and use http services
     return {items, categories, cartItems};
   }
 

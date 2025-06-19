@@ -1,39 +1,32 @@
 <div [class]="type === 'dashboard' ? 'item-card' : 'cart-item'">
 
-  <!-- Checkbox - Dashboard -->
   <input *ngIf="type === 'dashboard'"
-         #checkbox
          type="checkbox"
          [checked]="isInCart"
-         (change)="cartToggleClick.emit({item: item, checked: checkbox.checked})"
+         (change)="onCartToggleChange($event)"
          class="item-checkbox">
 
-  <!-- Common item info -->
   <div class="item-info">
     <div class="item-name">{{ item.name }}</div>
     <div class="item-category">{{ item.category }}</div>
   </div>
 
-  <!-- Price -->
   <div class="item-price">
     {{item.price | currency: 'BHD':'symbol':'1.3-3'}}
   </div>
 
-  <!-- Dashboard buttons -->
   <div *ngIf="type === 'dashboard'" class="item-buttons">
-    <button class="btn-edit" (click)="editClick.emit(item)">Edit</button>
-    <button class="btn-delete" (click)="deleteClick.emit(item)">Delete</button>
+    <button class="btn-edit" (click)="onEditClick()">Edit</button>
+    <button class="btn-delete" (click)="onDeleteClick()">Delete</button>
   </div>
 
-  <!-- Cart quantity controls -->
   <div *ngIf="type === 'cart'" class="item-quantity">
-    <input #quantityInput
-           type="number"
+    <input type="number"
            [value]="item.quantity"
-           (change)="quantityChangeEvent.emit({cartItemId: item.id, value: quantityInput.value})"
+           (change)="onQuantityChange($event)"
            min="1"
            class="quantity-input">
-    <button (click)="removeItemClick.emit(item.id)" class="remove-btn">
+    <button (click)="onRemoveClick()" class="remove-btn">
       <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
         <path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/>
       </svg>
